@@ -15,7 +15,8 @@ int main(int argc, char *argv[]){
     glutReshapeFunc(ReshapeSize);
     glutMotionFunc(PosicionRaton);
     glutSpecialFunc(RuedaRaton);
-    
+    glutTimerFunc(100, Timer, 0);
+
     glutMainLoop(); // bucle principal
     
     return 0;
@@ -87,60 +88,12 @@ void RuedaRaton(int key, int x, int y){
     glutPostRedisplay();
 }
 
-
-
-void caja(float x, float y, float z){
-    glPushMatrix();
-    glScalef(x, y, z);
-    glutWireCube(1.0f);
-    glPopMatrix();
+void Timer(int v){
+    angulo += paso;
+    if (angulo > 360) angulo -= 360;
+    glutPostRedisplay();
+    glutTimerFunc(1000 / pasos_segundo, Timer, v);
 }
-
-void body(){
-    float cuerpo_ancho = 1.5f, cuerpo_alto = 2.0f, cuerpo_grueso = 0.5f;
-    float cabeza = 1.0f; // head
-    float pierna = 2.5f;
-    float brazo = 2.0f;
-    glPushMatrix();
-    // cabeza
-    glPushMatrix();
-    glTranslatef(0.0f, cuerpo_alto / 2.0 + cabeza / 2.0, 0.0f);
-    glRotatef(80.0f, 1.0f, 0.0f, 0.0f);
-    glutWireSphere(cabeza / 2.0, 10, 10);
-    glPopMatrix();
-    // cuerpo
-    caja(cuerpo_ancho, cuerpo_alto, cuerpo_grueso);
-    // pierna
-    glPushMatrix();
-    glTranslatef(0.8f*cuerpo_ancho / 2, -cuerpo_alto / 2, 0.0f);
-    glRotatef(15.0f, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, -pierna / 2.0f, 0.0f);
-    caja(0.2f, pierna, 0.2f);
-    glPopMatrix();
-    
-    glPushMatrix();
-    glTranslatef(-0.8f*cuerpo_ancho / 2, -cuerpo_alto / 2, 0.0f);
-    glRotatef(-15.0f, 0.0f, 0.01, 1.0f);
-    glTranslatef(0.0f, -pierna / 2.0f, 0.0f);
-    caja(0.2f, pierna, 0.2f);
-    glPopMatrix(); // brazo
-    
-    glPushMatrix();
-    glTranslatef(cuerpo_ancho / 2, cuerpo_alto / 2, 0.0f);
-    glRotatef(135.0f, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, -brazo / 2.0f, 0.0f);
-    caja(0.2f, brazo, 0.2f);
-    glPopMatrix(); // brazo
-    
-    glPushMatrix();
-    glTranslatef(-cuerpo_ancho / 2, cuerpo_alto / 2, 0.0f);
-    glRotatef(-45.0f, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, -brazo / 2.0f, 0.0f);
-    caja(0.2f, brazo, 0.2f);
-    glPopMatrix();
-    glPopMatrix();
-}
-
 
 
 
@@ -158,13 +111,17 @@ void Display(){
     float y = (float)(radio*cos(theta));
     float z = (float)(radio*sin(theta)*cos(phi));
     gluLookAt(x,y,z,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f); // mira al (0,0,0)
+    glRotatef(-90.f, 1.0f, 0.0f, 0.0f);
+    glRotatef(angulo, 0.0f, 0.0f, 1.0f);
+    glutWireSphere(2.0f, 20, 20);
+    glPushMatrix();
+    glTranslatef(5.0f, 0.0f, 0.0f);
+    glScalef(0.2f, 0.2f, 0.2f);
+    glutWireCube(1.0f);
+    glPopMatrix();
     
-    // TO DO
-    body();
-    
-    
-    
-    glFlush(); // actualiza el framebuffer
-    glutSwapBuffers(); // en caso de animacion
+    glFlush();
+    glutSwapBuffers();
+
 }
 

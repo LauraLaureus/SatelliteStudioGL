@@ -34,3 +34,7 @@ void Display();
 void ReshapeSize(int ancho, int alto);
 void PosicionRaton(int x, int y);
 void RuedaRaton(int key, int x, int y);
+
+float angulo = 0.0f, paso = 1.0f;
+int pasos_segundo = 20;
+void Timer(int v);
